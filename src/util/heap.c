@@ -70,8 +70,25 @@ void* kmalloc(size_t size) {
 
 void kfree(void* ptr) {
     if (!ptr) return;
+
+    // Get the header from the pointer
     heap_node_t* node = (heap_node_t*)((uint8_t*)ptr - sizeof(heap_node_t));
     node->is_free = 1;
-    
-    // TODO: Merge adjacent free blocks to prevent memory fragmentation.
+
+    // Look ahead: If the next node is also free, merge them
+    if (node->next && node->next->is_free) {
+        node->size += node->next->size + sizeof(heap_node_t);
+        node->next = node->next->next;
+    }
+
+    // Look behind: To merge backward, we walk from the start
+    // (In a more advanced "Doubly Linked List" heap, this is faster)
+    heap_node_t* current = heap_start;
+    while (current && current->next) {
+        if (current->is_free && current->next->is_free) {
+            current->size += current->next->size + sizeof(heap_node_t);
+            current->next = current->next->next;
+        }
+        current = current->next;
+    }
 }
