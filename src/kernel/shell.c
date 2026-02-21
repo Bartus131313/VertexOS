@@ -18,7 +18,6 @@ void shell_input(char c) {
         
         // Reset for the next command
         buffer_idx = 0;
-        kprint("\n");
         shell_print_prefix();
     } 
     // Handle Backspace

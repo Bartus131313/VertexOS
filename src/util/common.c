@@ -90,7 +90,7 @@ void kprint_int(int n) {
 
 void execute_command(char* input) {
     if (strcmp(input, "help") == 0) {
-        kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, memdump, clear");
+        kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, memdump, reverse <string>, clear");
     } else if (strcmp(input, "datetime") == 0) {
         int h, m, s, d, mo, y;
         read_rtc_full(&h, &m, &s, &d, &mo, &y);
@@ -145,14 +145,40 @@ void execute_command(char* input) {
         } else {
             kprint("\nNothing to free.");
         }
+    } else if (strncmp(input, "reverse ", 8) == 0) {
+        char* text = input + 8;
+        int len = strlen(text);
+
+        // Rent memory from the heap!
+        char* buffer = (char*)kmalloc(len + 1);
+
+        if (buffer) {
+            // Reverse the string into our new buffer
+            for (int i = 0; i < len; i++) {
+                buffer[i] = text[len - 1 - i];
+            }
+            buffer[len] = '\0';
+
+            kprintf("\nReversed: %s", buffer);
+
+            // Return the memory!
+            kfree(buffer);
+        }
+    } else if (strncmp(input, "echo ", 5) == 0) {
+        // This runs if the first 5 chars are "echo "
+        char* message = input + 5; 
+        kprintf("\n%s", message);
     } else if (strcmp(input, "memdump") == 0) {
         kheap_dump();
     } else if (strcmp(input, "cpu") == 0) {
         kprint("\n");
         print_cpu_vendor();
     } else if (strcmp(input, "clear") == 0) {
-        terminal_clear(); // Your clear screen function
+        terminal_clear();
+        return;
     } else {
         kprint("\nUnknown command.");
     }
+
+    kprint("\n");
 }
