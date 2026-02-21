@@ -90,7 +90,7 @@ void kprint_int(int n) {
 
 void execute_command(char* input) {
     if (strcmp(input, "help") == 0) {
-        kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, clear");
+        kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, memdump, clear");
     } else if (strcmp(input, "datetime") == 0) {
         int h, m, s, d, mo, y;
         read_rtc_full(&h, &m, &s, &d, &mo, &y);
@@ -145,6 +145,8 @@ void execute_command(char* input) {
         } else {
             kprint("\nNothing to free.");
         }
+    } else if (strcmp(input, "memdump") == 0) {
+        kheap_dump();
     } else if (strcmp(input, "cpu") == 0) {
         kprint("\n");
         print_cpu_vendor();

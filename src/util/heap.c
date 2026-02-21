@@ -68,6 +68,26 @@ void* kmalloc(size_t size) {
     return NULL; // Out of heap memory!
 }
 
+void kheap_dump() {
+    heap_node_t* current = heap_start;
+    int index = 0;
+
+    kprintf("\nIndex | Address    | Size       | Status");
+    kprintf("\n---------------------------------------");
+
+    while (current) {
+        kprintf("\n[%d]   | %x | %d bytes | %s", 
+                index, 
+                (uint32_t)current, 
+                current->size, 
+                current->is_free ? "FREE" : "USED");
+        
+        current = current->next;
+        index++;
+    }
+    kprintf("\n---------------------------------------");
+}
+
 void kfree(void* ptr) {
     if (!ptr) return;
 

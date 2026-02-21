@@ -7,6 +7,9 @@
 // Initializes the heap by requesting blocks from the PMM
 void kheap_init();
 
+// Dumps heap memory into the terminal
+void kheap_dump();
+
 // Get Heap used bytes
 size_t kheap_get_used_bytes();
 size_t kheap_get_total_bytes();
