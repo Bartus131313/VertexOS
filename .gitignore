@@ -390,6 +390,8 @@ FodyWeavers.xsd
 # Ignore the entire build directory
 build/
 
+.vscode/
+
 # Ignore any ISO or BIN files in the root (if they appear there)
 *.bin
 *.iso
