@@ -1,14 +1,27 @@
 #include "ui/ui.h"
 
 void ui_init() {
-    // 1. Physically clear the ENTIRE screen once at boot
+    // Physically clear the entire screen once at boot
     uint16_t* video_mem = (uint16_t*)VIDEO_MEM;
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
         video_mem[i] = (uint16_t)' ' | (uint16_t)0x0F << 8;
     }
     
-    // 2. Draw the permanent status bar
-    ui_draw_statusbar(" TERMINAL ", " VertexOS v1.0.0 ");
+    // Create a buffer large enough for both
+    char merged_string[64];
+    
+    // Clear it out by putting a null terminator at the very beginning
+    merged_string[0] = '\0'; 
+    
+    // Merge them together
+    strcat(merged_string, " ");
+    strcat(merged_string, SYSTEM_NAME);
+    strcat(merged_string, " v.");
+    strcat(merged_string, SYSTEM_VERSION);
+    strcat(merged_string, " ");
+
+    // Draw the permanent status bar
+    ui_draw_statusbar(" TERMINAL ", merged_string);
 }
 
 void ui_print_at(int x, int y, const char* str, uint8_t color) {

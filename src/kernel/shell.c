@@ -4,11 +4,11 @@ char command_buffer[MAX_COMMAND_LEN + 1];
 int buffer_idx = 0;
 
 void shell_print_prefix() {
-    kprint("\nVertexOS>: ");
+    kprintf("\n%s>: ", SYSTEM_NAME);
 }
 
 void shell_input(char c) {
-    // 1. Handle Enter Key
+    // Handle Enter Key
     if (c == '\n') {
         command_buffer[buffer_idx] = '\0'; // Null-terminate the string
         
@@ -21,14 +21,14 @@ void shell_input(char c) {
         kprint("\n");
         shell_print_prefix();
     } 
-    // 2. Handle Backspace
+    // Handle Backspace
     else if (c == '\b') {
         if (buffer_idx > 0) {
             buffer_idx--;
             terminal_putchar('\b'); // Erase from screen
         }
     } 
-    // 3. Handle Regular Characters
+    // Handle Regular Characters
     else {
         if (buffer_idx < MAX_COMMAND_LEN) {
             command_buffer[buffer_idx++] = c;

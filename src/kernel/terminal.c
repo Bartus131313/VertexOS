@@ -16,7 +16,7 @@ void update_cursor() {
 void terminal_scroll() {
     uint16_t* video_mem = (uint16_t*)VIDEO_MEM;
     
-    // 1. Move lines 1 through 23 up by one
+    // Move lines 1 through 23 up by one
     for (int y = 0; y < VIEW_HEIGHT - 1; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
             video_mem[y * VGA_WIDTH + x] = video_mem[(y + 1) * VGA_WIDTH + x];
@@ -24,7 +24,7 @@ void terminal_scroll() {
         line_lengths[y] = line_lengths[y+1];
     }
 
-    // 2. Clear ONLY the last line of the VIEW area (Row 23)
+    // Clear ONLY the last line of the VIEW area (Row 23)
     // This keeps Row 24 (Status Bar) untouched!
     for (int x = 0; x < VGA_WIDTH; x++) {
         video_mem[(VIEW_HEIGHT - 1) * VGA_WIDTH + x] = (uint16_t)' ' | (uint16_t)term_color << 8;
@@ -35,7 +35,7 @@ void terminal_scroll() {
 void terminal_clear() {
     uint16_t* video_mem = (uint16_t*)VIDEO_MEM;
 
-    // 1. Only fill the VIEW_HEIGHT (0 to 23) with spaces
+    // Only fill the VIEW_HEIGHT (0 to 23) with spaces
     // This leaves the Status Bar (row 24) completely untouched
     for (int y = 0; y < VIEW_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
@@ -43,16 +43,16 @@ void terminal_clear() {
         }
     }
 
-    // 2. Reset logic variables
+    // Reset logic variables
     term_row = 0;
     term_column = 0;
 
-    // 3. Reset line_lengths only for the viewable area
+    // Reset line_lengths only for the viewable area
     for (int i = 0; i < VIEW_HEIGHT; i++) {
         line_lengths[i] = 0;
     }
 
-    // 4. Move hardware cursor to top-left (0,0)
+    // Move hardware cursor to top-left
     update_cursor();
 }
 
@@ -79,23 +79,19 @@ void terminal_putchar(char c) {
         line_lengths[term_row] = term_column;
     }
 
-    // --- LOGIC CHANGE START ---
-
-    // 1. Handle Horizontal Wrap
+    // Handle Horizontal Wrap
     if (term_column >= VGA_WIDTH) {
         line_lengths[term_row] = VGA_WIDTH;
         term_column = 0;
         term_row++;
     }
 
-    // 2. Handle Vertical Scrolling
+    // Handle Vertical Scrolling
     // If the next line to type on is the STATUS_ROW, we scroll instead.
     if (term_row >= VIEW_HEIGHT) {
         terminal_scroll();
         term_row = VIEW_HEIGHT - 1; // Stay on the last line of the view
     }
-
-    // --- LOGIC CHANGE END ---
 
     update_cursor();
 }

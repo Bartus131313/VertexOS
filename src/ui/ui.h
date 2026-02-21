@@ -2,7 +2,9 @@
 #define UI_H
 
 #include <stdint.h>
+
 #include "kernel/terminal.h"
+#include "util/constans.h"
 
 typedef struct {
     int x, y, width, height;

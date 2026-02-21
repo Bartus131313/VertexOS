@@ -1,9 +1,10 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#include "shell.h"
-#include "terminal.h"
+#include "kernel/shell.h"
+#include "kernel/terminal.h"
 #include "util/common.h"
+#include "util/constans.h"
 
 #define MAX_COMMAND_LEN 255
 

@@ -13,5 +13,4 @@ void print_cpu_vendor() {
 
     kprint("CPU Vendor: ");
     kprint(vendor);
-    kprint("\n");
 }
