@@ -5,36 +5,42 @@ FLAGS    equ  MBALIGN | MEMINFO ; This is the Multiboot 'flag' field
 MAGIC    equ  0x1BADB002        ; 'Magic number' lets bootloader find the header
 CHECKSUM equ -(MAGIC + FLAGS)   ; Checksum of above, to prove we are multiboot
 
+; Multiboot section
 section .multiboot
 align 4
     dd MAGIC
     dd FLAGS
     dd CHECKSUM
 
+; Stack section
 section .bss
 align 16
 stack_bottom:
     resb 16384 ; 16 KB stack
 stack_top:
 
+; Start section
 section .text
 global _start
 
 _start:
-    cli                 ; Disable interrupts
-    mov esp, stack_top  ; Point the stack pointer to our new stack
-    push ebx             ; PUSH the multiboot pointer (ebx) onto the stack
+    cli                     ; Disable interrupts
+    mov esp, stack_top      ; Point the stack pointer to our new stack
+    push ebx                ; PUSH the multiboot pointer (ebx) onto the stack
 
     extern kmain
-    call kmain          ; Jump to our C kernel
+    call kmain              ; Jump to our C kernel
     
+; Stop the CPU from executing next instructions
 .hang:
-    hlt                 ; Stop the CPU
-    jmp .hang           ; If it wakes up, stop it again
+    hlt                     ; Stop the CPU
+    jmp .hang               ; If it wakes up, stop it again
 
-global keyboard_handler
+; Import keyboard function from C
 extern keyboard_handler_main
 
+; Handles keyboard inputs
+global keyboard_handler
 keyboard_handler:
     pushad          ; Push EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI
     cld             ; Clear direction flag (C code expects this)
@@ -42,12 +48,14 @@ keyboard_handler:
     popad           ; Restore all registers
     iretd           ; Interrupt return - THIS MUST BE IRETD
 
+; Loads IDT
 global idt_load
 idt_load:
     mov eax, [esp + 4]
     lidt [eax]
     ret
 
+; Function that handles timer
 global timer_handler
 timer_handler:
     pushad
@@ -58,6 +66,7 @@ timer_handler:
     popad
     iretd
 
+; Flush GDT
 global gdt_flush
 gdt_flush:
     mov eax, [esp + 4]  ; Get the pointer to the GDT pointer

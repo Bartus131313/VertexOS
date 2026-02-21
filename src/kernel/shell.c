@@ -4,7 +4,7 @@ char command_buffer[MAX_COMMAND_LEN + 1];
 int buffer_idx = 0;
 
 void shell_print_prefix() {
-    kprint("\nSystem >:");
+    kprint("\nVertexOS>: ");
 }
 
 void shell_input(char c) {

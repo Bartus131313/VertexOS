@@ -3,19 +3,138 @@
 
 #include <stdint.h>
 
-#define MULTIBOOT_INFO_MEMORY 0x00000001
+/** The magic number for the Multiboot header */
+#define MULTIBOOT_HEADER_MAGIC 0x1BADB002
+ 
+/** Boot modules must be page aligned */
+#define MB_FLAG_PGALIGN 0x00000001
+ 
+/** Memory map must be provided */
+#define MB_FLAG_MEMMAP 0x00000002
+ 
+/** Video mode information must be provided */
+#define MB_FLAG_VIDMODE 0x00000004
+ 
+/** Image is a raw multiboot image (not ELF) */
+#define MB_FLAG_RAW 0x00010000
 
-// The definition of the structure
+/**
+ * The magic number passed by a Multiboot-compliant boot loader
+ *
+ * Must be passed in register %eax when jumping to the Multiboot OS
+ * image.
+ */
+#define MULTIBOOT_BOOTLOADER_MAGIC 0x2BADB002
+ 
+/** Multiboot information structure mem_* fields are valid */
+#define MBI_FLAG_MEM 0x00000001
+ 
+/** Multiboot information structure boot_device field is valid */
+#define MBI_FLAG_BOOTDEV 0x00000002
+ 
+/** Multiboot information structure cmdline field is valid */
+#define MBI_FLAG_CMDLINE 0x00000004
+ 
+/** Multiboot information structure module fields are valid */
+#define MBI_FLAG_MODS 0x00000008
+ 
+/** Multiboot information structure a.out symbol table is valid */
+#define MBI_FLAG_AOUT 0x00000010
+ 
+/** Multiboot information struture ELF section header table is valid */
+#define MBI_FLAG_ELF 0x00000020
+ 
+/** Multiboot information structure memory map is valid */
+#define MBI_FLAG_MMAP 0x00000040
+ 
+/** Multiboot information structure drive list is valid */
+#define MBI_FLAG_DRIVES 0x00000080
+ 
+/** Multiboot information structure ROM configuration field is valid */
+#define MBI_FLAG_CFGTBL 0x00000100
+ 
+/** Multiboot information structure boot loader name field is valid */
+#define MBI_FLAG_LOADER 0x00000200
+ 
+/** Multiboot information structure APM table is valid */
+#define MBI_FLAG_APM 0x00000400
+ 
+/** Multiboot information structure video information is valid */
+#define MBI_FLAG_VBE 0x00000800
+
+/** A multiboot header */
 typedef struct {
+    uint32_t magic;
+    uint32_t flags;
+    uint32_t checksum;
+    uint32_t header_addr;
+    uint32_t load_addr;
+    uint32_t load_end_addr;
+    uint32_t bss_end_addr;
+    uint32_t entry_addr;
+} multiboot_header;
+
+/** A multiboot a.out symbol table */
+typedef struct {
+    uint32_t tabsize;
+    uint32_t strsize;
+    uint32_t addr;
+    uint32_t reserved;
+} multiboot_aout_symbol_table;
+ 
+/** A multiboot ELF section header table */
+typedef struct {
+    uint32_t num;
+    uint32_t size;
+    uint32_t addr;
+    uint32_t shndx;
+} multiboot_elf_section_header_table;
+
+/** A multiboot information structure */
+typedef struct{
     uint32_t flags;
     uint32_t mem_lower;
     uint32_t mem_upper;
     uint32_t boot_device;
     uint32_t cmdline;
-    // ... add more fields here if needed later
-} multiboot_info_t;
+    uint32_t mods_count;
+    uint32_t mods_addr;
+    union {
+        multiboot_aout_symbol_table aout_syms;
+        multiboot_elf_section_header_table elf_sections;
+    } syms;
+    uint32_t mmap_length;
+    uint32_t mmap_addr;
+    uint32_t drives_length;
+    uint32_t drives_addr;
+    uint32_t config_table;
+    uint32_t boot_loader_name;
+    uint32_t apm_table;
+    uint32_t vbe_control_info;
+    uint32_t vbe_mode_info;
+    uint16_t vbe_mode;
+    uint16_t vbe_interface_seg;
+    uint16_t vbe_interface_off;
+    uint16_t vbe_interface_len;
+} multiboot_info;
+ 
+/** A multiboot module structure */
+typedef struct {
+    uint32_t mod_start;
+    uint32_t mod_end;
+    uint32_t string;
+    uint32_t reserved;
+} multiboot_module;
+ 
+/** A multiboot memory map entry */
+typedef struct {
+    uint32_t size;
+    uint64_t base_addr;
+    uint64_t length;
+    uint32_t type;
+} multiboot_memory_map;
 
-// 'extern' tells other files: "The variable 'mbi' exists in another .c file"
-extern multiboot_info_t* global_mbi;
+// Global Multiboot Info for other files to use
+extern multiboot_info* global_mbi;
 
 #endif

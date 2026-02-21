@@ -66,7 +66,7 @@ void execute_command(char* input) {
         kprint(":");
         if (s < 10) kprint("0"); kprint_int(s);
     } else if (strcmp(input, "meminfo") == 0) {
-        if (global_mbi->flags & MULTIBOOT_INFO_MEMORY) {
+        if (global_mbi->flags & MBI_FLAG_MEM) {
             // Upper memory starts at 1MB, so we add 1024KB to get the real total
             uint32_t total_kb = global_mbi->mem_lower + global_mbi->mem_upper + 1024;
             
