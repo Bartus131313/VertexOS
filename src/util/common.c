@@ -102,19 +102,26 @@ void execute_command(char* input) {
             (s < 10 ? "0" : ""), s
         );
     } else if (strcmp(input, "meminfo") == 0) {
-        if (global_mbi->flags & MBI_FLAG_MEM) {
-            // Upper memory starts at 1MB, so we add 1024KB to get the real total
-            uint32_t total_kb = global_mbi->mem_lower + global_mbi->mem_upper + 1024;
+        uint32_t p_used = pmm_get_used_blocks();
+        uint32_t p_total = pmm_get_total_blocks();
+        size_t h_used = kheap_get_used_bytes();
+        size_t h_total = kheap_get_total_bytes();
 
-            // kprintf("\nMemory Map Detected:\nLower: %d KB\nUpper: %d KB\nTotal: %d MB\n", 
-            //         global_mbi->mem_lower, global_mbi->mem_upper, total_kb / 1024);
-
-            kprintf("\nMemory Map Detected:\nTotal : %d MB\n", total_kb / 1024);
-
-            kprintf("Blocks used: %d/%d\n", get_used_blocks(), get_total_blocks());
-        } else {
-            kprint("\nError: Multiboot memory info not provided.");
-        }
+        kprintf("\n--- %s Memory Report ---", SYSTEM_NAME);
+        
+        // Physical Layer (PMM)
+        kprintf("\nPhysical RAM  : %d / %d blocks", p_used, p_total);
+        kprintf("\nPhysical Usage: %d%%", (p_used * 100) / p_total);
+        
+        kprintf("\n------------------------------");
+        
+        // Heap Layer (kmalloc)
+        // Converting bytes to KB for readability
+        kprintf("\nKernel Heap   : %d / %d KB", h_used / 1024, h_total / 1024);
+        
+        // Bonus: Show how many "free" blocks are left in the physical pool
+        kprintf("\nAvailable RAM : %d MB", ((p_total - p_used) * 4) / 1024);
+        kprintf("\n");
     } else if (strcmp(input, "cpu") == 0) {
         kprint("\n");
         print_cpu_vendor();

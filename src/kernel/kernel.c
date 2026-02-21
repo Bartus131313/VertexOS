@@ -2,6 +2,8 @@
 #include "kernel/terminal.h"
 #include "kernel/multiboot.h"
 #include "ui/ui.h"
+#include "util/memory.h"
+#include "util/heap.h"
 
 // Define the global variable here (without extern)
 multiboot_info_t* global_mbi = 0;
@@ -18,6 +20,9 @@ void initialize() {
 
     // Initialize Physical Memory Manager for future memory operations
     pmm_init(global_mbi);
+
+    // Initialize Heap
+    kheap_init();
 }
 
 // TODO: Create cool windows

@@ -10,8 +10,8 @@
 #define BLOCKS_PER_BYTE 8
 
 // --- Getters ---
-uint32_t get_total_blocks();
-uint32_t get_used_blocks();
+uint32_t pmm_get_total_blocks();
+uint32_t pmm_get_used_blocks();
 
 // --- Byte-Level Utilities (Standard C) ---
 void* memset(void* dest, int val, size_t count);

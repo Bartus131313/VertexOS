@@ -7,6 +7,7 @@
 #include "kernel/multiboot.h"
 #include "util/string.h"
 #include "util/memory.h"
+#include "util/constans.h"
 
 void kprintf(const char* format, ...);
 void kprint(const char* str);

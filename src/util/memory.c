@@ -12,11 +12,11 @@ static void clear_bit(uint32_t bit) { memory_bitmap[bit / 32] &= ~(1 << (bit % 3
 static int  test_bit(uint32_t bit) { return memory_bitmap[bit / 32] & (1 << (bit % 32)); }
 
 // --- Getters ---
-uint32_t get_total_blocks() {
+uint32_t pmm_get_total_blocks() {
     return total_blocks;
 }
 
-uint32_t get_used_blocks() {
+uint32_t pmm_get_used_blocks() {
     return used_blocks;
 }
 
