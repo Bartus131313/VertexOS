@@ -1,4 +1,5 @@
 #include "common.h"
+#include "kernel/multiboot.h"
 
 void kprint(const char* str) {
     for (int i = 0; str[i] != '\0'; i++) {
@@ -45,7 +46,7 @@ int strcmp(const char* s1, const char* s2) {
 
 void execute_command(char* input) {
     if (strcmp(input, "help") == 0) {
-        kprint("\nCommands: help, datetime, cpu, clear");
+        kprint("\nCommands: help, datetime, meminfo, cpu, clear");
     } else if (strcmp(input, "datetime") == 0) {
         int h, m, s, d, mo, y;
         read_rtc_full(&h, &m, &s, &d, &mo, &y);
@@ -64,6 +65,18 @@ void execute_command(char* input) {
         if (m < 10) kprint("0"); kprint_int(m);
         kprint(":");
         if (s < 10) kprint("0"); kprint_int(s);
+    } else if (strcmp(input, "meminfo") == 0) {
+        if (global_mbi->flags & MULTIBOOT_INFO_MEMORY) {
+            // Upper memory starts at 1MB, so we add 1024KB to get the real total
+            uint32_t total_kb = global_mbi->mem_lower + global_mbi->mem_upper + 1024;
+            
+            kprint("\nMemory Map Detected:");
+            kprint("\nLower: "); kprint_int(global_mbi->mem_lower); kprint(" KB");
+            kprint("\nUpper: "); kprint_int(global_mbi->mem_upper); kprint(" KB");
+            kprint("\nTotal: "); kprint_int(total_kb / 1024); kprint(" MB");
+        } else {
+            kprint("\nError: Multiboot memory info not provided.");
+        }
     } else if (strcmp(input, "cpu") == 0) {
         kprint("\n");
         print_cpu_vendor();

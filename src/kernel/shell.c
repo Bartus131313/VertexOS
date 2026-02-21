@@ -4,7 +4,7 @@ char command_buffer[MAX_COMMAND_LEN + 1];
 int buffer_idx = 0;
 
 void shell_print_prefix() {
-    kprint("\nSystem >:")
+    kprint("\nSystem >:");
 }
 
 void shell_input(char c) {
@@ -18,6 +18,7 @@ void shell_input(char c) {
         
         // Reset for the next command
         buffer_idx = 0;
+        kprint("\n");
         shell_print_prefix();
     } 
     // 2. Handle Backspace

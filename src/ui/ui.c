@@ -1,5 +1,16 @@
 #include "ui/ui.h"
 
+void ui_init() {
+    // 1. Physically clear the ENTIRE screen once at boot
+    uint16_t* video_mem = (uint16_t*)VIDEO_MEM;
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        video_mem[i] = (uint16_t)' ' | (uint16_t)0x0F << 8;
+    }
+    
+    // 2. Draw the permanent status bar
+    ui_draw_statusbar(" TERMINAL ", " VertexOS v1.0.0 ");
+}
+
 void ui_print_at(int x, int y, const char* str, uint8_t color) {
     uint16_t* video_mem = (uint16_t*)0xB8000;
     for (int i = 0; str[i] != '\0'; i++) {

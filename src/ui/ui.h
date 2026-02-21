@@ -11,6 +11,8 @@ typedef struct {
     uint8_t title_color;
 } Window;
 
+void ui_init();
+
 void ui_draw_window(Window* win);
 void ui_draw_rect(int x, int y, int w, int h, uint8_t color);
 void ui_print_at(int x, int y, const char* str, uint8_t color);

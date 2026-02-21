@@ -35,24 +35,24 @@ void terminal_scroll() {
 void terminal_clear() {
     uint16_t* video_mem = (uint16_t*)VIDEO_MEM;
 
-    // 1. Fill the entire screen with spaces
-    for (int y = 0; y < VGA_HEIGHT; y++) {
+    // 1. Only fill the VIEW_HEIGHT (0 to 23) with spaces
+    // This leaves the Status Bar (row 24) completely untouched
+    for (int y = 0; y < VIEW_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
-            // We use ' ' (space) and the current term_color
             video_mem[y * VGA_WIDTH + x] = (uint16_t)' ' | (uint16_t)term_color << 8;
         }
     }
 
-    // 2. Reset our logic variables
+    // 2. Reset logic variables
     term_row = 0;
     term_column = 0;
 
-    // 3. Reset the line_lengths array (IMPORTANT for your backspace fix!)
-    for (int i = 0; i < VGA_HEIGHT; i++) {
+    // 3. Reset line_lengths only for the viewable area
+    for (int i = 0; i < VIEW_HEIGHT; i++) {
         line_lengths[i] = 0;
     }
 
-    // 4. Move the blinking hardware cursor back to the start
+    // 4. Move hardware cursor to top-left (0,0)
     update_cursor();
 }
 
