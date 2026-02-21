@@ -11,14 +11,8 @@ VertexOS is a modular, monolithic kernel designed for efficiency and a streamlin
 - Professional Formatting: 24-hour RTC clock with leading-zero padding.
 
 ## 🚀 Getting Started
-To build VertexOS, you will need:
-- i686-elf-gcc (Cross-Compiler)
-- nasm
-- grub-mkrescue & xorriso (for ISO creation)
-- qemu-system-i386
-
-### Build and Launch
-1. Install all requirements on **Linux**:
+At this moment the only supported system for building is **Linux**. If you are using **Windows** i recommend downloading **Windows Subsystem for Linux (WSL)**
+1. Install all requirements:
 ```Bash
 sudo apt update && sudo apt install -y nasm make gcc-multilib binutils qemu-system-x86 grub-common grub-pc-bin xorriso mtools
 ```
