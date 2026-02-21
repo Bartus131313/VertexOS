@@ -106,8 +106,12 @@ void execute_command(char* input) {
             // Upper memory starts at 1MB, so we add 1024KB to get the real total
             uint32_t total_kb = global_mbi->mem_lower + global_mbi->mem_upper + 1024;
 
-            kprintf("\nMemory Map Detected:\nLower: %d KB\nUpper: %d KB\nTotal: %d MB", 
-                    global_mbi->mem_lower, global_mbi->mem_upper, total_kb / 1024);
+            // kprintf("\nMemory Map Detected:\nLower: %d KB\nUpper: %d KB\nTotal: %d MB\n", 
+            //         global_mbi->mem_lower, global_mbi->mem_upper, total_kb / 1024);
+
+            kprintf("\nMemory Map Detected:\nTotal : %d MB\n", total_kb / 1024);
+
+            kprintf("Blocks used: %d/%d\n", get_used_blocks(), get_total_blocks());
         } else {
             kprint("\nError: Multiboot memory info not provided.");
         }

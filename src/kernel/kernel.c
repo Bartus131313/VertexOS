@@ -4,7 +4,7 @@
 #include "ui/ui.h"
 
 // Define the global variable here (without extern)
-multiboot_info* global_mbi = 0;
+multiboot_info_t* global_mbi = 0;
 
 // Import global functions from ASM
 extern void init_gdt();
@@ -12,8 +12,12 @@ extern void init_idt();
 
 // Initialize critical things
 void initialize() {
+    // Initialize GDT & IDT
     init_gdt();
     init_idt();
+
+    // Initialize Physical Memory Manager for future memory operations
+    pmm_init(global_mbi);
 }
 
 // TODO: Create cool windows
@@ -35,7 +39,7 @@ void initialize() {
 // }
 
 // Starting point of C kernel
-void kmain(multiboot_info* mbi_ptr) {
+void kmain(multiboot_info_t* mbi_ptr) {
     // Save the pointer passed by the bootloader into our global variable
     global_mbi = mbi_ptr;
 

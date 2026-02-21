@@ -72,7 +72,7 @@ typedef struct {
     uint32_t load_end_addr;
     uint32_t bss_end_addr;
     uint32_t entry_addr;
-} multiboot_header;
+} multiboot_header_t;
 
 /** A multiboot a.out symbol table */
 typedef struct {
@@ -80,7 +80,7 @@ typedef struct {
     uint32_t strsize;
     uint32_t addr;
     uint32_t reserved;
-} multiboot_aout_symbol_table;
+} multiboot_aout_symbol_table_t;
  
 /** A multiboot ELF section header table */
 typedef struct {
@@ -88,7 +88,7 @@ typedef struct {
     uint32_t size;
     uint32_t addr;
     uint32_t shndx;
-} multiboot_elf_section_header_table;
+} multiboot_elf_section_header_table_t;
 
 /** A multiboot information structure */
 typedef struct{
@@ -100,8 +100,8 @@ typedef struct{
     uint32_t mods_count;
     uint32_t mods_addr;
     union {
-        multiboot_aout_symbol_table aout_syms;
-        multiboot_elf_section_header_table elf_sections;
+        multiboot_aout_symbol_table_t aout_syms;
+        multiboot_elf_section_header_table_t elf_sections;
     } syms;
     uint32_t mmap_length;
     uint32_t mmap_addr;
@@ -116,7 +116,7 @@ typedef struct{
     uint16_t vbe_interface_seg;
     uint16_t vbe_interface_off;
     uint16_t vbe_interface_len;
-} multiboot_info;
+} multiboot_info_t;
  
 /** A multiboot module structure */
 typedef struct {
@@ -124,7 +124,7 @@ typedef struct {
     uint32_t mod_end;
     uint32_t string;
     uint32_t reserved;
-} multiboot_module;
+} multiboot_module_t;
  
 /** A multiboot memory map entry */
 typedef struct {
@@ -132,9 +132,9 @@ typedef struct {
     uint64_t base_addr;
     uint64_t length;
     uint32_t type;
-} multiboot_memory_map;
+} multiboot_memory_map_t;
 
 // Global Multiboot Info for other files to use
-extern multiboot_info* global_mbi;
+extern multiboot_info_t* global_mbi;
 
 #endif
