@@ -1,5 +1,7 @@
 #include "common.h"
 
+void* test_ptr = NULL;
+
 void kprintf(const char* format, ...) {
     va_list args;
     va_start(args, format);
@@ -88,13 +90,13 @@ void kprint_int(int n) {
 
 void execute_command(char* input) {
     if (strcmp(input, "help") == 0) {
-        kprint("\nCommands: help, datetime, meminfo, cpu, clear");
+        kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, clear");
     } else if (strcmp(input, "datetime") == 0) {
         int h, m, s, d, mo, y;
         read_rtc_full(&h, &m, &s, &d, &mo, &y);
         
         // Notice how much cleaner this is! We use a ternary operator (?:) to add the "0" padding
-        kprintf("\nDate: %s%d/%s%d/20%d  Time: %s%d:%s%d:%s%d",
+        kprintf("\nDate: %s%d/%s%d/20%d  Time: %s%d:%s%d:%s%d  UTC+0",
             (d < 10 ? "0" : ""), d, 
             (mo < 10 ? "0" : ""), mo, y,
             (h < 10 ? "0" : ""), h, 
@@ -122,6 +124,27 @@ void execute_command(char* input) {
         // Bonus: Show how many "free" blocks are left in the physical pool
         kprintf("\nAvailable RAM : %d MB", ((p_total - p_used) * 4) / 1024);
         kprintf("\n");
+    } else if (strcmp(input, "testalloc") == 0) {
+        if (test_ptr != NULL) {
+            kprint("\nAlready allocated! Use 'testfree' first.");
+        } else {
+            kprint("\nAllocating 10KB...");
+            test_ptr = kmalloc(1024 * 10);
+            if (test_ptr) {
+                kprintf("\nSuccess! Pointer: %x", (uint32_t)test_ptr);
+            } else {
+                kprint("\nFailed to allocate.");
+            }
+        }
+    } 
+    else if (strcmp(input, "testfree") == 0) {
+        if (test_ptr) {
+            kfree(test_ptr);
+            test_ptr = NULL;
+            kprint("\nMemory freed and coalesced.");
+        } else {
+            kprint("\nNothing to free.");
+        }
     } else if (strcmp(input, "cpu") == 0) {
         kprint("\n");
         print_cpu_vendor();
