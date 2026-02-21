@@ -36,25 +36,42 @@ void* memcpy(void* dest, const void* src, size_t count) {
 
 // --- PMM Logic ---
 void pmm_init(multiboot_info_t* mbi) {
-    // Calculate total memory
+    // // Calculate total memory
+    // uint32_t mem_kb = mbi->mem_lower + mbi->mem_upper;
+    // total_blocks = mem_kb / 4; 
+    // used_blocks = 0; // Start at 0 and count up
+
+    // // Initialize bitmap as "All Used" (1s)
+    // // This is safer than starting at 0.
+    // memset(memory_bitmap, 0xFF, (total_blocks / BLOCKS_PER_BYTE));
+    
+    // // Mark all memory as "Free" first (0s)
+    // // We start from block 0 to total_blocks
+    // for (uint32_t i = 0; i < total_blocks; i++) {
+    //     clear_bit(i);
+    // }
+
+    // // RESERVE THE PROTECTED ZONES
+    // // We must protect the first 1MB (VGA, BIOS, Kernel code)
+    // // 1MB / 4KB = 256 blocks.
+    // for (uint32_t i = 0; i < 256; i++) {
+    //     set_bit(i);
+    //     used_blocks++;
+    // }
+
     uint32_t mem_kb = mbi->mem_lower + mbi->mem_upper;
     total_blocks = mem_kb / 4; 
-    used_blocks = 0; // Start at 0 and count up
+    used_blocks = 0; 
 
-    // Initialize bitmap as "All Used" (1s)
-    // This is safer than starting at 0.
-    memset(memory_bitmap, 0xFF, (total_blocks / BLOCKS_PER_BYTE));
+    // 1. Clear everything
+    memset(memory_bitmap, 0, (total_blocks / BLOCKS_PER_BYTE));
     
-    // Mark all memory as "Free" first (0s)
-    // We start from block 0 to total_blocks
-    for (uint32_t i = 0; i < total_blocks; i++) {
-        clear_bit(i);
-    }
-
-    // RESERVE THE PROTECTED ZONES
-    // We must protect the first 1MB (VGA, BIOS, Kernel code)
-    // 1MB / 4KB = 256 blocks.
-    for (uint32_t i = 0; i < 256; i++) {
+    // 2. PROTECT THE FIRST 4MB 
+    // This covers BIOS, VGA, Kernel Code, PMM Variables, and the Bitmap
+    // 4MB = 1024 blocks
+    uint32_t blocks_to_reserve = 1024; 
+    
+    for (uint32_t i = 0; i < blocks_to_reserve; i++) {
         set_bit(i);
         used_blocks++;
     }
