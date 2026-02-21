@@ -19,11 +19,13 @@ stack_top:
 
 section .text
 global _start
-extern kmain   ; Now without the underscore!
 
 _start:
     cli                 ; Disable interrupts
     mov esp, stack_top  ; Point the stack pointer to our new stack
+    push ebx             ; PUSH the multiboot pointer (ebx) onto the stack
+
+    extern kmain
     call kmain          ; Jump to our C kernel
     
 .hang:
