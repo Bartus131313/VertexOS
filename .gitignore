@@ -387,7 +387,15 @@ FodyWeavers.xsd
 !.vscode/extensions.json
 *.code-workspace
 
-.build/*
+# Ignore the entire build directory
+build/
+
+# Ignore any ISO or BIN files in the root (if they appear there)
+*.bin
+*.iso
+
+# Ignore macOS system files (if you are on Mac)
+.DS_Store
 
 # Local History for Visual Studio Code
 .history/

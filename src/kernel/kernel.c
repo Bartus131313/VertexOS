@@ -27,7 +27,14 @@ void initialize() {
 //     ui_print_at(22, 12, "Press any key to start...", 0x8F); // 0x8F makes it blink!
 // }
 
-void kmain(uint32_t mbp) {
+typedef struct {
+    uint32_t flags;
+    uint32_t mem_lower;
+    uint32_t mem_upper;
+    // ... there are more fields, but we only need these for now
+} multiboot_info_t;
+
+void kmain(multiboot_info_t* mbi) {
     initialize();
     terminal_clear();
     
@@ -37,6 +44,14 @@ void kmain(uint32_t mbp) {
     kprint("CarbonOS Kernel Version 0.1.0-alpha\n");
     kprint("Copyright (c) 2026 Bartek. All rights reserved.\n");
     kprint("----------------------------------------------\n");
+
+    uint32_t ram_kb = mbi->mem_lower + mbi->mem_upper;
+    uint32_t ram_mb = ram_kb / 1024;
+    
+    kprint("Memory detected: ");
+    kprint_int(ram_mb);
+    kprint(" MB\n");
+
     shell_print_prefix();
 
     while(1) { asm volatile("hlt"); }
