@@ -1,16 +1,25 @@
-; Multiboot constants
-MBALIGN  equ  1 << 0            ; Align loaded modules on page boundaries
-MEMINFO  equ  1 << 1            ; Provide memory map
-FLAGS    equ  MBALIGN | MEMINFO ; This is the Multiboot 'flag' field
-MAGIC    equ  0x1BADB002        ; 'Magic number' lets bootloader find the header
-CHECKSUM equ -(MAGIC + FLAGS)   ; Checksum of above, to prove we are multiboot
+; Multiboot macros
+MBOOT_PAGE_ALIGN    equ 1<<0
+MBOOT_MEM_INFO      equ 1<<1
+MBOOT_VIDEO_MODE    equ 1<<2 ; <--- THIS BIT IS KEY
+MBOOT_MAGIC         equ 0x1BADB002
+MBOOT_FLAGS         equ MBOOT_PAGE_ALIGN | MBOOT_MEM_INFO | MBOOT_VIDEO_MODE
+MBOOT_CHECKSUM      equ -(MBOOT_MAGIC + MBOOT_FLAGS)
 
-; Multiboot section
 section .multiboot
 align 4
-    dd MAGIC
-    dd FLAGS
-    dd CHECKSUM
+    dd MBOOT_MAGIC
+    dd MBOOT_FLAGS
+    dd MBOOT_CHECKSUM
+
+    ; These are 5 "Reserved" fields for aout kludge (set to 0)
+    dd 0, 0, 0, 0, 0
+
+    ; Video Mode Preference (The VESA config)
+    dd 0    ; 0 = Linear Framebuffer
+    dd 1920 ; Width
+    dd 1080  ; Height
+    dd 32   ; Depth (Bits Per Pixel)
 
 ; Stack section
 section .bss

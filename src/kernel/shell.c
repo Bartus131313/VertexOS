@@ -8,6 +8,8 @@ void shell_print_prefix() {
 }
 
 void shell_input(char c) {
+    return;
+
     // Handle Enter Key
     if (c == '\n') {
         command_buffer[buffer_idx] = '\0'; // Null-terminate the string
