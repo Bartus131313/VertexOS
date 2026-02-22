@@ -35,7 +35,10 @@ void vesa_get_screen_size(uint32_t* width, uint32_t* height) {
 
 // Push the back buffer to the actual screen
 void vesa_flip() {
-    memcpy(front_buffer, back_buffer, vesa_screen_width * vesa_screen_height * 4);
+    uint32_t size = vesa_screen_width * vesa_screen_height * 4;
+    
+    // Blast the back_buffer to the Front Buffer
+    sse_memcpy(front_buffer, back_buffer, size);
 }
 
 void vesa_draw_pixel(int x, int y, uint32_t color) {

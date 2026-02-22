@@ -12,6 +12,8 @@ extern uint32_t vesa_screen_width;
 extern uint32_t vesa_screen_height;
 extern uint32_t vesa_screen_pitch;
 
+extern void sse_memcpy(void* dest, void* src, uint32_t n);
+
 void vesa_init(multiboot_info_t* mbi);
 
 // Getters
