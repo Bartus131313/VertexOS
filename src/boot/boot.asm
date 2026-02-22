@@ -74,6 +74,33 @@ mouse_handler:
     popa             ; Restore all registers
     iret             ; Return from interrupt
 
+; sse_memcpy(void* dest, void* src, uint32_t n)
+global sse_memcpy
+sse_memcpy:
+    push ebp
+    mov ebp, esp
+    push edi
+    push esi
+
+    mov edi, [ebp + 8]   ; Destination
+    mov esi, [ebp + 12]  ; Source
+    mov ecx, [ebp + 16]  ; Number of bytes
+    
+    shr ecx, 4           ; Divide bytes by 16 (since we move 16 per loop)
+
+.loop:
+    movdqu xmm0, [esi]   ; Load 16 bytes from RAM into XMM0 register
+    movdqu [edi], xmm0   ; Store 16 bytes from XMM0 into Video RAM
+    add esi, 16
+    add edi, 16
+    loop .loop
+
+    pop esi
+    pop edi
+    mov esp, ebp
+    pop ebp
+    ret
+
 ; Loads IDT
 global idt_load
 idt_load:

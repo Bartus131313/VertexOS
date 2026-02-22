@@ -14,11 +14,26 @@ multiboot_info_t* global_mbi = 0;
 extern void init_gdt();
 extern void init_idt();
 
+void enable_sse() {
+    asm volatile (
+        "mov %%cr0, %%eax\n"
+        "and $0xFFFB, %%ax\n"      // Clear CR0.EM (bit 2)
+        "or $0x2, %%ax\n"          // Set CR0.MP (bit 1)
+        "mov %%eax, %%cr0\n"
+        "mov %%cr4, %%eax\n"
+        "or $0x600, %%ax\n"        // Set CR4.OSFXSR (bit 9) and CR4.OSXMMEXCPT (bit 10)
+        "mov %%eax, %%cr4\n"
+        ::: "eax"
+    );
+}
+
 // Initialize critical things
 void initialize() {
     // Initialize GDT & IDT
     init_gdt();
     init_idt();
+
+    enable_sse();
 
     // Initialize Physical Memory Manager for future memory operations
     pmm_init(global_mbi);
@@ -31,24 +46,6 @@ void initialize() {
 
     mouse_init();
 }
-
-// TODO: Create cool windows
-// void show_welcome_ui() {
-//     terminal_clear();
-    
-//     Window win = {
-//         .x = 20, .y = 5, 
-//         .width = 40, .height = 10, 
-//         .title = " BARTEK OS STATUS ", 
-//         .border_color = 0x0B, // Light Cyan
-//         .title_color = 0x0F   // White
-//     };
-    
-//     ui_draw_window(&win);
-//     ui_print_at(22, 7, "CPU: AuthenticAMD", 0x07);
-//     ui_print_at(22, 8, "RAM: 128 MB", 0x07);
-//     ui_print_at(22, 12, "Press any key to start...", 0x8F); // 0x8F makes it blink!
-// }
 
 // DEPRECATED: Used to run in Text Mode
 /*
@@ -73,6 +70,8 @@ void kmain(multiboot_info_t* mbi_ptr) {
     while(1) { asm volatile("hlt"); }
 }
     */
+
+// Tests for screen colors
 
 void test_gradient(uint32_t width, uint32_t height) {
     for (uint32_t y = 0; y < height; y++) {
@@ -145,26 +144,42 @@ void kmain(multiboot_info_t* mbi_ptr) {
     asm volatile("sti");
 
     while(1) { 
-        // 1. Draw Background (Clears the old mouse position)
+        // Draw Background (Clears the old mouse position)
         vesa_draw_rect(0, 0, vesa_screen_width, vesa_screen_height, RGB(50, 100, 150));
 
-        // 2. Draw Taskbar
-        vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
+        // Draw Taskbar
+        // vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
 
-        // 3. Draw UI based on click!
-        if (mouse_left_click) {
-            vesa_draw_rect(5, vesa_screen_height - 35, 60, 30, RGB(255, 0, 0)); // Red when clicked
+        // test_gradient(vesa_screen_width, vesa_screen_height);
+
+        // Define the Start Button area
+        int start_btn_x = 15;
+        int start_btn_y = 15;
+        int start_btn_w = 150;
+        int start_btn_h = 50;
+            
+        // Inside while(1)...
+        bool is_over_start = (mouse_x >= start_btn_x && mouse_x <= start_btn_x + start_btn_w) &&
+                             (mouse_y >= start_btn_y && mouse_y <= start_btn_y + start_btn_h);
+            
+        if (is_over_start && mouse_left_click) {
+            // Button is pressed! Draw it "pushed down" (darker)
+            vesa_draw_rect(start_btn_x, start_btn_y, start_btn_w, start_btn_h, RGB(100, 100, 100));
+        } else if (is_over_start) {
+            // Hovering! Draw it slightly lighter
+            vesa_draw_rect(start_btn_x, start_btn_y, start_btn_w, start_btn_h, RGB(180, 180, 180));
         } else {
-            vesa_draw_rect(5, vesa_screen_height - 35, 60, 30, RGB(150, 150, 150)); // Normal Start Button
+            // Normal state
+            vesa_draw_rect(start_btn_x, start_btn_y, start_btn_w, start_btn_h, RGB(150, 150, 150));
         }
 
-        // 4. Draw the Mouse (use the vesa_draw_mouse function from earlier)
+        // Draw the Mouse
         vesa_draw_mouse(mouse_x, mouse_y);
 
-        // 5. Flip the back-buffer to the screen
+        // Flip the back-buffer to the screen
         vesa_flip(); 
 
-        // Optional: Halt CPU until next interrupt to save power, 
+        // Halt CPU until next interrupt to save power, 
         // instead of burning 100% CPU spinning the loop.
         asm volatile("hlt");
     }
