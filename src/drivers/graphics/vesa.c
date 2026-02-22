@@ -2,7 +2,6 @@
 
 uint32_t* front_buffer; // The actual screen (Physical RAM)
 uint32_t* back_buffer;  // Our "scratchpad" (In Kernel Heap)
-// uint32_t screen_width, screen_height, screen_pitch;
 
 uint32_t vesa_screen_width = 0;
 uint32_t vesa_screen_height = 0;
@@ -51,13 +50,13 @@ void vesa_draw_rect(int x, int y, int w, int h, uint32_t color) {
         uint32_t* dest = &back_buffer[(y + i) * vesa_screen_width + x];
         
         // Fill the entire row width with the color
-        // This is much faster than calling draw_pixel in a nested loop
         for (int j = 0; j < w; j++) {
             dest[j] = color;
         }
     }
 }
 
+// TODO: Loading cursor icon from file system
 const char mouse_cursor[19][12] = {
     {2,2,0,0,0,0,0,0,0,0,0,0},
     {2,1,2,0,0,0,0,0,0,0,0,0},

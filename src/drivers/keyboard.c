@@ -73,7 +73,8 @@ unsigned char keyboard_map_shift[128] = {
   0,	/* All other keys are undefined */
 };
 
-int cursor_pos = 0; // Keep track of where we are typing
+// Keep track of where we are typing
+int cursor_pos = 0;
 
 void keyboard_handler_main(void) {
   uint8_t keycode = inb(0x60);

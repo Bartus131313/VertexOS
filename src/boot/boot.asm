@@ -1,7 +1,7 @@
 ; Multiboot macros
-MBOOT_PAGE_ALIGN    equ 1<<0
-MBOOT_MEM_INFO      equ 1<<1
-MBOOT_VIDEO_MODE    equ 1<<2 ; <--- THIS BIT IS KEY
+MBOOT_PAGE_ALIGN    equ 1 << 0
+MBOOT_MEM_INFO      equ 1 << 1
+MBOOT_VIDEO_MODE    equ 1 << 2
 MBOOT_MAGIC         equ 0x1BADB002
 MBOOT_FLAGS         equ MBOOT_PAGE_ALIGN | MBOOT_MEM_INFO | MBOOT_VIDEO_MODE
 MBOOT_CHECKSUM      equ -(MBOOT_MAGIC + MBOOT_FLAGS)
@@ -38,41 +38,12 @@ _start:
     push ebx                ; PUSH the multiboot pointer (ebx) onto the stack
 
     extern kmain
-    call kmain              ; Jump to our C kernel
+    call kmain              ; Jump to C kernel
     
 ; Stop the CPU from executing next instructions
 .hang:
     hlt                     ; Stop the CPU
     jmp .hang               ; If it wakes up, stop it again
-
-; Import Keyboard function from C
-extern keyboard_handler_main
-
-; Handles Keyboard inputs
-global keyboard_handler
-keyboard_handler:
-    pushad          ; Push EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI
-    cld             ; Clear direction flag (C code expects this)
-    call keyboard_handler_main
-    popad           ; Restore all registers
-    iretd           ; Interrupt return - THIS MUST BE IRETD
-
-; Import Mouse handler function from C
-extern mouse_handler_main
-
-; Handles Mouse inputs
-global mouse_handler
-mouse_handler:
-    pusha            ; Save all registers (eax, ebx, ecx, edx, etc.)
-    
-    call mouse_handler_main
-    
-    mov al, 0x20
-    out 0xA0, al     ; Send EOI to Slave PIC (because IRQ 12 is on Slave)
-    out 0x20, al     ; Send EOI to Master PIC
-    
-    popa             ; Restore all registers
-    iret             ; Return from interrupt
 
 ; sse_memcpy(void* dest, void* src, uint32_t n)
 global sse_memcpy
@@ -112,8 +83,8 @@ idt_load:
 global timer_handler
 timer_handler:
     pushad
-    ; We don't even need a C function yet, 
-    ; just tell the PIC we received the interrupt
+
+    ; Tell the PIC we received the interrupt
     mov al, 0x20
     out 0x20, al
     popad
@@ -130,6 +101,6 @@ gdt_flush:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    jmp 0x08:.flush     ; 0x08 is the offset to our Code Segment. Far jump!
+    jmp 0x08:.flush     ; 0x08 is the offset to our Code Segment.
 .flush:
     ret
