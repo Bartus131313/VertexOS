@@ -87,24 +87,23 @@ void test_gradient(uint32_t width, uint32_t height) {
 }
 
 void test_desktop(uint32_t width, uint32_t height) {
-    // 1. Draw a "Deep Space" background gradient
+    // Draw a "Deep Space" background gradient
     for (uint32_t y = 0; y < height; y++) {
-        uint8_t color_val = (y * 100) / height; // 0 to 100 range
+        uint8_t color_val = (y * 100) / height;
         vesa_draw_rect(0, y, width, 1, RGB(20 + (color_val / 2), 30 + color_val, 50 + color_val));
     }
 
-    // 2. Taskbar (Dark translucent style)
+    // Taskbar (Dark translucent style)
     vesa_draw_rect(0, height - 45, width, 45, RGB(15, 15, 20));
 
-    // 3. Start Button (Accent color)
+    // Start Button (Accent color)
     vesa_draw_rect(5, height - 40, 80, 35, RGB(0, 120, 215)); 
 
-    // 4. Draw a "Window" outline
-    vesa_draw_rect(100, 100, 400, 300, RGB(240, 240, 240)); // Window body
-    vesa_draw_rect(100, 100, 400, 30, RGB(0, 120, 215));    // Title bar
+    // Draw a "Window" outline
+    vesa_draw_rect(100, 100, 400, 300, RGB(240, 240, 240));
+    vesa_draw_rect(100, 100, 400, 30, RGB(0, 120, 215));
 }
 
-// You'll need a simple random seed or just use x * y
 void test_noise(uint32_t width, uint32_t height) {
     static uint32_t seed = 0x12345678;
     for (uint32_t x = 0; x < width; x++) {
@@ -148,9 +147,7 @@ void kmain(multiboot_info_t* mbi_ptr) {
         vesa_draw_rect(0, 0, vesa_screen_width, vesa_screen_height, RGB(50, 100, 150));
 
         // Draw Taskbar
-        // vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
-
-        // test_gradient(vesa_screen_width, vesa_screen_height);
+        vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
 
         // Define the Start Button area
         int start_btn_x = 15;
@@ -172,7 +169,7 @@ void kmain(multiboot_info_t* mbi_ptr) {
             // Normal state
             vesa_draw_rect(start_btn_x, start_btn_y, start_btn_w, start_btn_h, RGB(150, 150, 150));
         }
-
+        
         // Draw the Mouse
         vesa_draw_mouse(mouse_x, mouse_y);
 

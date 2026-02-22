@@ -10,6 +10,46 @@ VertexOS is a modular, monolithic kernel designed for efficiency and a streamlin
 - Hardware Intelligence: Detects CPU vendor and calculates total RAM via Multiboot structures.
 - Professional Formatting: 24-hour RTC clock with leading-zero padding.
 
+## 📸 System Gallery
+### Gradient Test
+```C
+void test_gradient(uint32_t width, uint32_t height) {
+    for (uint32_t y = 0; y < height; y++) {
+        for (uint32_t x = 0; x < width; x++) {
+            // Map X to Red (0-255) and Y to Green (0-255)
+            uint8_t r = (x * 255) / width;
+            uint8_t g = (y * 255) / height;
+            uint8_t b = 128;
+
+            vesa_draw_pixel(x, y, RGB(r, g, b));
+        }
+    }
+}
+```
+![Gradient Test](images/gradient.png)
+### Desktop Test
+```C
+void test_desktop(uint32_t width, uint32_t height) {
+    // Draw a "Deep Space" background gradient
+    for (uint32_t y = 0; y < height; y++) {
+        uint8_t color_val = (y * 100) / height;
+        vesa_draw_rect(0, y, width, 1, RGB(20 + (color_val / 2), 30 + color_val, 50 + color_val));
+    }
+
+    // Taskbar (Dark translucent style)
+    vesa_draw_rect(0, height - 45, width, 45, RGB(15, 15, 20));
+
+    // Start Button (Accent color)
+    vesa_draw_rect(5, height - 40, 80, 35, RGB(0, 120, 215)); 
+
+    // Draw a "Window" outline
+    vesa_draw_rect(100, 100, 400, 300, RGB(240, 240, 240));
+    vesa_draw_rect(100, 100, 400, 30, RGB(0, 120, 215));
+}
+```
+![Desktop Test](images/desktop2.png)
+
+
 ## 🚀 Getting Started
 At this moment the only supported system for building is **Linux**. If you are using **Windows** i recommend downloading **Windows Subsystem for Linux (WSL)**
 1. Install all requirements:

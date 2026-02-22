@@ -60,4 +60,7 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 run: all
-	qemu-system-x86_64 -cdrom $(ISO)
+	qemu-system-x86_64 -cdrom $(ISO) \
+    -m 512M \
+    -cpu max \
+    -device pci-ohci -device usb-tablet
