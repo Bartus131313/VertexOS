@@ -47,10 +47,16 @@ void pic_remap() {
     // Mask all interrupts except the keyboard (IRQ1)
     outb(0x21, 0xFD);
     outb(0xA1, 0xFF);
+
+    // To enable the mouse, we clear bit 4 of the Slave PIC mask 
+    // (IRQ 8-15, so 12 is bit 4)
+    uint8_t mask = inb(0xA1);
+    outb(0xA1, mask & ~(1 << 4));
 }
 
-extern void keyboard_handler();
 extern void timer_handler();
+extern void keyboard_handler();
+extern void mouse_handler();
 
 void init_idt() {
     idtp.limit = (sizeof(struct idt_entry) * 256) - 1;
@@ -68,6 +74,9 @@ void init_idt() {
     
     // 0x21 is the Keyboard (IRQ 1)
     idt_set_gate(0x21, (uint32_t)keyboard_handler, 0x08, 0x8E);
+
+    // 0x2C is Mouse (IRQ 12) -> 0x20 + 12 = 32 + 12 = 44 (0x2C)
+    idt_set_gate(0x2C, (uint32_t)mouse_handler, 0x08, 0x8E);
 
     idt_load((uint32_t)&idtp);
     asm volatile("sti");

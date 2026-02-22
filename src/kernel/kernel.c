@@ -2,6 +2,7 @@
 #include "kernel/terminal.h"
 #include "kernel/multiboot.h"
 #include "drivers/graphics/vesa.h"
+#include "drivers/mouse.h"
 #include "ui/ui.h"
 #include "util/memory.h"
 #include "util/heap.h"
@@ -27,6 +28,8 @@ void initialize() {
 
     // Initialize VESA
     vesa_init(global_mbi);
+
+    mouse_init();
 }
 
 // TODO: Create cool windows
@@ -113,19 +116,56 @@ void test_noise(uint32_t width, uint32_t height) {
     }
 }
 
+// void kmain(multiboot_info_t* mbi_ptr) {
+//     global_mbi = mbi_ptr;
+//     initialize();
+
+//     uint32_t w, h;
+//     vesa_get_screen_size(&w, &h);
+
+//     // CHOOSE ONE:
+//     // test_desktop(w, h);
+//     test_gradient(w, h);
+//     // test_noise(w, h);
+
+//     vesa_flip();
+
+//     while(1) { asm volatile("hlt"); }
+// }
+
 void kmain(multiboot_info_t* mbi_ptr) {
     global_mbi = mbi_ptr;
     initialize();
 
-    uint32_t w, h;
-    vesa_get_screen_size(&w, &h);
+    // Center the mouse to start
+    mouse_x = vesa_screen_width / 2;
+    mouse_y = vesa_screen_height / 2;
+    
+    // Enable interrupts so the mouse starts talking
+    asm volatile("sti");
 
-    // CHOOSE ONE:
-    // test_desktop(w, h);
-    test_gradient(w, h);
-    // test_noise(w, h);
+    while(1) { 
+        // 1. Draw Background (Clears the old mouse position)
+        vesa_draw_rect(0, 0, vesa_screen_width, vesa_screen_height, RGB(50, 100, 150));
 
-    vesa_flip();
+        // 2. Draw Taskbar
+        vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
 
-    while(1) { asm volatile("hlt"); }
+        // 3. Draw UI based on click!
+        if (mouse_left_click) {
+            vesa_draw_rect(5, vesa_screen_height - 35, 60, 30, RGB(255, 0, 0)); // Red when clicked
+        } else {
+            vesa_draw_rect(5, vesa_screen_height - 35, 60, 30, RGB(150, 150, 150)); // Normal Start Button
+        }
+
+        // 4. Draw the Mouse (use the vesa_draw_mouse function from earlier)
+        vesa_draw_mouse(mouse_x, mouse_y);
+
+        // 5. Flip the back-buffer to the screen
+        vesa_flip(); 
+
+        // Optional: Halt CPU until next interrupt to save power, 
+        // instead of burning 100% CPU spinning the loop.
+        asm volatile("hlt");
+    }
 }

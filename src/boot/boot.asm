@@ -17,8 +17,8 @@ align 4
 
     ; Video Mode Preference (The VESA config)
     dd 0    ; 0 = Linear Framebuffer
-    dd 1920 ; Width
-    dd 1080  ; Height
+    dd 1280 ; Width
+    dd 720  ; Height
     dd 32   ; Depth (Bits Per Pixel)
 
 ; Stack section
@@ -45,10 +45,10 @@ _start:
     hlt                     ; Stop the CPU
     jmp .hang               ; If it wakes up, stop it again
 
-; Import keyboard function from C
+; Import Keyboard function from C
 extern keyboard_handler_main
 
-; Handles keyboard inputs
+; Handles Keyboard inputs
 global keyboard_handler
 keyboard_handler:
     pushad          ; Push EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI
@@ -56,6 +56,23 @@ keyboard_handler:
     call keyboard_handler_main
     popad           ; Restore all registers
     iretd           ; Interrupt return - THIS MUST BE IRETD
+
+; Import Mouse handler function from C
+extern mouse_handler_main
+
+; Handles Mouse inputs
+global mouse_handler
+mouse_handler:
+    pusha            ; Save all registers (eax, ebx, ecx, edx, etc.)
+    
+    call mouse_handler_main
+    
+    mov al, 0x20
+    out 0xA0, al     ; Send EOI to Slave PIC (because IRQ 12 is on Slave)
+    out 0x20, al     ; Send EOI to Master PIC
+    
+    popa             ; Restore all registers
+    iret             ; Return from interrupt
 
 ; Loads IDT
 global idt_load
