@@ -92,16 +92,16 @@ void execute_command(char* input) {
     if (strcmp(input, "help") == 0) {
         kprint("\nCommands: help, datetime, meminfo, cpu, testalloc, testfree, memdump, reverse <string>, clear");
     } else if (strcmp(input, "datetime") == 0) {
-        int h, m, s, d, mo, y;
-        read_rtc_full(&h, &m, &s, &d, &mo, &y);
+        rtc_time_t now;
+        rtc_get_time(&now);
         
         // Notice how much cleaner this is! We use a ternary operator (?:) to add the "0" padding
         kprintf("\nDate: %s%d/%s%d/20%d  Time: %s%d:%s%d:%s%d  UTC+0",
-            (d < 10 ? "0" : ""), d, 
-            (mo < 10 ? "0" : ""), mo, y,
-            (h < 10 ? "0" : ""), h, 
-            (m < 10 ? "0" : ""), m, 
-            (s < 10 ? "0" : ""), s
+            (now.day < 10 ? "0" : ""), now.day, 
+            (now.month < 10 ? "0" : ""), now.month, now.year,
+            (now.hour < 10 ? "0" : ""), now.hour, 
+            (now.minute < 10 ? "0" : ""), now.minute, 
+            (now.second < 10 ? "0" : ""), now.second
         );
     } else if (strcmp(input, "meminfo") == 0) {
         uint32_t p_used = pmm_get_used_blocks();
