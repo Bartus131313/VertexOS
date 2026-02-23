@@ -118,19 +118,22 @@ void kmain(multiboot_info_t* mbi_ptr) {
     global_mbi = mbi_ptr;
     initialize();
 
+    uint32_t screen_width, screen_height;
+    vesa_get_screen_size(&screen_width, &screen_height);
+
     // Center the mouse to start
-    mouse_x = vesa_screen_width / 2;
-    mouse_y = vesa_screen_height / 2;
+    mouse_x = screen_width / 2;
+    mouse_y = screen_height / 2;
     
     // Enable interrupts so the mouse starts talking
     asm volatile("sti");
 
     while(1) { 
         // Draw Background (Clears the old mouse position)
-        vesa_draw_rect(0, 0, vesa_screen_width, vesa_screen_height, RGB(50, 100, 150));
+        vesa_draw_rect(0, 0, screen_width, screen_height, RGB(50, 100, 150));
 
         // Draw Taskbar
-        vesa_draw_rect(0, vesa_screen_height - 40, vesa_screen_width, 40, RGB(200, 200, 200));
+        vesa_draw_rect(0, screen_height - 40, screen_width, 40, RGB(200, 200, 200));
 
         // Define the Start Button area
         int start_btn_x = 15;

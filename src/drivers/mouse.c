@@ -103,10 +103,13 @@ void mouse_handler_main() {
         mouse_x += rel_x;
         mouse_y -= rel_y; // Y is inverted on screen
 
+        uint32_t screen_width, screen_height;
+        vesa_get_screen_size(&screen_width, &screen_height);
+
         // Clamp to screen
         if (mouse_x < 0) mouse_x = 0;
         if (mouse_y < 0) mouse_y = 0;
-        if (mouse_x >= vesa_screen_width) mouse_x = vesa_screen_width - 1;
-        if (mouse_y >= vesa_screen_height) mouse_y = vesa_screen_height - 1;
+        if (mouse_x >= screen_width) mouse_x = screen_width - 1;
+        if (mouse_y >= screen_height) mouse_y = screen_height - 1;
     }
 }
