@@ -1,7 +1,7 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-#include "io.h"
+#include "hal/io.h"
 
 #define CMOS_ADDR 0x70
 #define CMOS_DATA 0x71

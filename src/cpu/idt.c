@@ -7,7 +7,7 @@
  */
 
 #include <stdint.h>
-#include "drivers/io.h"
+#include "hal/io.h"
 
 struct idt_entry {
     uint16_t base_low;

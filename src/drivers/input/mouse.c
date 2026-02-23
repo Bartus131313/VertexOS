@@ -1,6 +1,6 @@
-#include "mouse.h"
-#include "drivers/io.h"
-#include "graphics/vesa.h"
+#include "drivers/input/mouse.h"
+#include "drivers/graphics/vesa.h"
+#include "hal/io.h"
 
 int32_t mouse_x = 0;
 int32_t mouse_y = 0;

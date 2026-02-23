@@ -2,7 +2,7 @@
 #include "kernel/terminal.h"
 #include "kernel/multiboot.h"
 #include "drivers/graphics/vesa.h"
-#include "drivers/mouse.h"
+#include "drivers/input/mouse.h"
 #include "ui/ui.h"
 #include "util/memory.h"
 #include "util/heap.h"

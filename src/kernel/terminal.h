@@ -1,7 +1,7 @@
 #ifndef TERMINAL_H
 #define TERMIANL_H
 
-#include "drivers/io.h"
+#include "hal/io.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
