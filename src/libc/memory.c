@@ -1,4 +1,4 @@
-#include "util/memory.h"
+#include "libc/memory.h"
 
 // The bitmap will live at a fixed location in memory (e.g., 2MB mark)
 // In a 128MB system, this map only takes 4KB of space.

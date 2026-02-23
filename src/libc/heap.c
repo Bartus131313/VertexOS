@@ -1,5 +1,5 @@
-#include "util/heap.h"
-#include "util/memory.h"
+#include "libc/heap.h"
+#include "libc/memory.h"
 
 typedef struct heap_node {
     uint32_t size;

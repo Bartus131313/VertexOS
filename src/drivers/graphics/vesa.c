@@ -1,5 +1,5 @@
 #include "drivers/graphics/vesa.h"
-#include "util/heap.h"
+#include "libc/heap.h"
 
 // ----------------------------------------------------------------------------
 // Private State (Static ensures these aren't accessible outside this file)

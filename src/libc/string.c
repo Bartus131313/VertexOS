@@ -1,4 +1,4 @@
-#include "util/string.h"
+#include "libc/string.h"
 
 int strlen(const char* str) {
     int len = 0;

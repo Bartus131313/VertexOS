@@ -4,8 +4,8 @@
 #include "drivers/graphics/vesa.h"
 #include "drivers/input/mouse.h"
 #include "ui/ui.h"
-#include "util/memory.h"
-#include "util/heap.h"
+#include "libc/memory.h"
+#include "libc/heap.h"
 
 // Define the global variable here (without extern)
 multiboot_info_t* global_mbi = 0;

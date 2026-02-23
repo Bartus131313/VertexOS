@@ -5,10 +5,10 @@
 
 #include "kernel/terminal.h"
 #include "kernel/multiboot.h"
-#include "util/string.h"
-#include "util/memory.h"
+#include "libc/string.h"
+#include "libc/memory.h"
+#include "libc/heap.h"
 #include "util/constans.h"
-#include "util/heap.h"
 #include "drivers/clock.h"
 
 void kprintf(const char* format, ...);
