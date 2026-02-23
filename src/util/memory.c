@@ -63,10 +63,10 @@ void pmm_init(multiboot_info_t* mbi) {
     total_blocks = mem_kb / 4; 
     used_blocks = 0; 
 
-    // 1. Clear everything
+    // Clear everything
     memset(memory_bitmap, 0, (total_blocks / BLOCKS_PER_BYTE));
     
-    // 2. PROTECT THE FIRST 4MB 
+    // PROTECT THE FIRST 4MB 
     // This covers BIOS, VGA, Kernel Code, PMM Variables, and the Bitmap
     // 4MB = 1024 blocks
     uint32_t blocks_to_reserve = 1024; 

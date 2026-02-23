@@ -1,3 +1,10 @@
+/**
+ *  Multiboot
+ * 
+ *  Defines the structures and constants for the Multiboot standard (v1).
+ *  This is the bridge between the bootloader (GRUB) and the OS Kernel.
+ */
+
 #ifndef MULTIBOOT_H
 #define MULTIBOOT_H
 

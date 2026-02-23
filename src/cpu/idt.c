@@ -1,9 +1,17 @@
+/**
+ * Interrupt Descriptor Table (IDT)
+ * 
+ * Tells the CPU exactly what code to run when a specific event (an Interrupt) happens. 
+ * Without an IDT, if you press a key or a "Divide by Zero" error occurs, 
+ * the CPU doesn't know what to do and will Triple Fault (instantly restart the computer).
+ */
+
 #include <stdint.h>
 #include "drivers/io.h"
 
 struct idt_entry {
     uint16_t base_low;
-    uint16_t sel;        // Our code segment (0x08)
+    uint16_t sel;        // Code segment (0x08)
     uint8_t  always0;    // Always 0
     uint8_t  flags;      // Access flags
     uint16_t base_high;
@@ -48,7 +56,7 @@ void pic_remap() {
     outb(0x21, 0xFD);
     outb(0xA1, 0xFF);
 
-    // To enable the mouse, we clear bit 4 of the Slave PIC mask 
+    // To enable the mouse, clear bit 4 of the Slave PIC mask 
     // (IRQ 8-15, so 12 is bit 4)
     uint8_t mask = inb(0xA1);
     outb(0xA1, mask & ~(1 << 4));

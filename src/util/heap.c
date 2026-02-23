@@ -139,7 +139,7 @@ void kfree(void* ptr) {
     heap_node_t* current = heap_start;
     while (current && current->next) {
         if (current->is_free && current->next->is_free) {
-            // ONLY MERGE IF THEY ARE PHYSICALLY ADJACENT
+            // Only merge if they are physically adjacent
             uint32_t current_end = (uint32_t)current + sizeof(heap_node_t) + current->size;
             if (current_end == (uint32_t)current->next) {
                 current->size += current->next->size + sizeof(heap_node_t);

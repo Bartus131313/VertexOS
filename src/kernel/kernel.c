@@ -114,23 +114,6 @@ void test_noise(uint32_t width, uint32_t height) {
     }
 }
 
-// void kmain(multiboot_info_t* mbi_ptr) {
-//     global_mbi = mbi_ptr;
-//     initialize();
-
-//     uint32_t w, h;
-//     vesa_get_screen_size(&w, &h);
-
-//     // CHOOSE ONE:
-//     // test_desktop(w, h);
-//     test_gradient(w, h);
-//     // test_noise(w, h);
-
-//     vesa_flip();
-
-//     while(1) { asm volatile("hlt"); }
-// }
-
 void kmain(multiboot_info_t* mbi_ptr) {
     global_mbi = mbi_ptr;
     initialize();

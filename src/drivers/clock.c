@@ -12,6 +12,7 @@ uint8_t get_rtc_register(int reg) {
 
 void read_rtc(int* h, int* m, int* s) {
     while (get_update_in_progress_flag()); // Wait for update
+    
     *s = get_rtc_register(0x00);
     *m = get_rtc_register(0x02);
     *h = get_rtc_register(0x04);

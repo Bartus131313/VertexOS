@@ -26,9 +26,13 @@ void mouse_wait(uint8_t a_type) {
 // Send a command to the mouse
 void mouse_write(uint8_t write) {
     mouse_wait(1);
-    outb(0x64, 0xD4); // Tell controller we are sending to the mouse
+    
+    // Tell controller we are sending to the mouse
+    outb(0x64, 0xD4);
     mouse_wait(1);
-    outb(0x60, write); // Send the actual command
+
+    // Send the actual command
+    outb(0x60, write); 
 }
 
 uint8_t mouse_read() {

@@ -1,3 +1,10 @@
+/**
+ * Global Descriptor Table (GDT)
+ * 
+ * Data structure used by x86-family processors to define the characteristics 
+ * of the various memory areas used during program execution.
+ */
+
 #include <stdint.h>
 
 // Each entry in the GDT
@@ -32,21 +39,21 @@ void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_
     gdt[num].access      = access;
 }
 
-// This will be called from kmain
+// Function to initialize GDT
 void init_gdt() {
     gp.limit = (sizeof(struct gdt_entry) * 3) - 1;
     gp.base  = (uint32_t)&gdt;
 
-    // 1. The Null Segment (Required)
+    // The Null Segment (Required)
     gdt_set_gate(0, 0, 0, 0, 0);
 
-    // 2. The Code Segment (Base 0, Limit 4GB, Executable/Read)
+    // The Code Segment (Base 0, Limit 4GB, Executable/Read)
     gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
 
-    // 3. The Data Segment (Base 0, Limit 4GB, Read/Write)
+    // The Data Segment (Base 0, Limit 4GB, Read/Write)
     gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
 
-    // Now we need to tell the CPU to use it
+    // Tell the CPU to use it
     extern void gdt_flush(uint32_t);
     gdt_flush((uint32_t)&gp);
 }
